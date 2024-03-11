@@ -27,11 +27,18 @@ public class UserInfoService implements UserDetailsService {
         return userInfo.map(UserInfoDetails::new)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"+username));
     }
-    public String addUser(UserInfo userInfo){
+    public String addUser(UserInfo userInfo) {
+        // Check if the user already exists
+        UserInfo existingUser = userInfoRepository.findByName(userInfo.getName()).orElse(null);
+        if (existingUser != null) {
+            return "The user is already registered";
+        }
+
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
         userInfoRepository.save(userInfo);
         return "User added successfully";
     }
+
     public List<UserInfo> getAllUser(){
 
         return userInfoRepository.findAll();

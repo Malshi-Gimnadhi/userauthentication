@@ -18,6 +18,7 @@ public class UserInfo {
     private Integer id;
     private String name;
     private String email;
-    private String roles;
+    private String nic;
+    private Integer mobileNo;
     private String password;
 }

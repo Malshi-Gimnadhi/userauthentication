@@ -36,13 +36,17 @@ public class userController {
 
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest authRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
-        if (authenticate.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUserName());
-        } else {
-            throw new UsernameNotFoundException("Invalid user request");
+        try {
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
+            if (authenticate.isAuthenticated()) {
+                return jwtService.generateToken(authRequest.getUserName());
+            }
+        } catch (UsernameNotFoundException e) {
+            throw new UsernameNotFoundException("Invalid username or password");
         }
+        throw new UsernameNotFoundException("Invalid username or password");
     }
+
 
     @GetMapping("/getUsers")
     //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
