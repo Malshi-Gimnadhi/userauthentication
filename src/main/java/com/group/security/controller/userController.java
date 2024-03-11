@@ -45,13 +45,13 @@ public class userController {
     }
 
     @GetMapping("/getUsers")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<UserInfo> getAllUsers() {
         return userInfoService.getAllUser();
     }
 
     @GetMapping("/getUsers/{id}")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     public UserInfo getUserById(@PathVariable Integer id) {
         return userInfoService.getUser(id);
     }
