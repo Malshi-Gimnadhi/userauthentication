@@ -5,29 +5,20 @@ import com.group.security.entity.UserInfo;
 import com.group.security.service.JwtService;
 import com.group.security.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/auth")
 public class userController {
 
     @Autowired
     private UserInfoService userInfoService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
     @Autowired
     private JwtService jwtService;
-
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Welcome to Spring Security !!";
-    }
 
     @PostMapping("/addUser")
     public String addUser(@RequestBody UserInfo userInfo) {
@@ -36,17 +27,12 @@ public class userController {
 
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest authRequest) {
-        try {
-            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
-            if (authenticate.isAuthenticated()) {
-                return jwtService.generateToken(authRequest.getUserName());
-            }
-        } catch (UsernameNotFoundException e) {
-            throw new UsernameNotFoundException("Invalid username or password");
+        String token = userInfoService.login(authRequest.getUserName(), authRequest.getPassword());
+        if (token != null) {
+            return token;
         }
         throw new UsernameNotFoundException("Invalid username or password");
     }
-
 
     @GetMapping("/getUsers")
     //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -59,11 +45,9 @@ public class userController {
     public UserInfo getUserById(@PathVariable Integer id) {
         return userInfoService.getUser(id);
     }
+
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "Welcome to Spring Security !!";
+    }
 }
-
-
-
-
-
-
-
