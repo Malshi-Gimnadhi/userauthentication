@@ -21,4 +21,5 @@ public class UserInfo {
     private String nic;
     private Integer mobileNo;
     private String password;
+    private String username;
 }

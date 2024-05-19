@@ -28,7 +28,7 @@ public class userController {
 
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest authRequest) {
-        String token = userInfoService.login(authRequest.getUserName(), authRequest.getPassword());
+        String token = userInfoService.login(authRequest.getUsername(), authRequest.getPassword());
         if (token != null) {
             return token;
         }
