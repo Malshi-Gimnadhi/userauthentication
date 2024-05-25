@@ -5,6 +5,8 @@ import com.group.security.entity.UserInfo;
 import com.group.security.service.JwtService;
 import com.group.security.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +29,13 @@ public class userController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
         String token = userInfoService.login(authRequest.getUsername(), authRequest.getPassword());
         if (token != null) {
-            return token;
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
-        throw new UsernameNotFoundException("Invalid username or password");
     }
 
     @GetMapping("/getUsers")

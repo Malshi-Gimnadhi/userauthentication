@@ -27,14 +27,14 @@ public class UserInfoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserInfo> userInfo = userInfoRepository.findByName(username);
+        Optional<UserInfo> userInfo = userInfoRepository.findByUsername(username);
         return userInfo.map(UserInfoDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found" + username));
     }
 
     public String addUser(UserInfo userInfo) {
         // Check if the user already exists
-        UserInfo existingUser = userInfoRepository.findByName(userInfo.getName()).orElse(null);
+        UserInfo existingUser = userInfoRepository.findByEmail(userInfo.getEmail()).orElse(null);
         if (existingUser != null) {
             return "The user is already registered";
         }
@@ -53,7 +53,7 @@ public class UserInfoService implements UserDetailsService {
     }
 
     public UserInfo getUserByUsername(String username) {
-        return userInfoRepository.findByName(username).orElse(null);
+        return userInfoRepository.findByUsername(username).orElse(null);
     }
 
     public String login(String username, String password) {
