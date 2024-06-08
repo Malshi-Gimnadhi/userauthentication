@@ -11,17 +11,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserInfoDetails implements UserDetails {
-    String userName=null;
-    String password = null;
-    List<GrantedAuthority> authorities;
+    private final String username;
+    private final String password;
+    private final List<GrantedAuthority> authorities;
 
-    public UserInfoDetails(UserInfo userInfo){
-        userName= userInfo.getName();
-        password= userInfo.getPassword();
-//        authorities= Arrays.stream(userInfo.getRoles().split(","))
-//                .map(SimpleGrantedAuthority::new)
-//                .collect(Collectors.toList());
+    public UserInfoDetails(UserInfo userInfo) {
+        this.username = userInfo.getUsername();
+        this.password = userInfo.getPassword();
+        this.authorities = Arrays.stream(userInfo.getRole().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -34,7 +35,7 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     @Override

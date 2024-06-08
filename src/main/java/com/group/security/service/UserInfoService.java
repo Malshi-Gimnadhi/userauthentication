@@ -3,7 +3,6 @@ package com.group.security.service;
 import com.group.security.entity.UserInfo;
 import com.group.security.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+// UserInfoService.java
 
 @Service
 public class UserInfoService implements UserDetailsService {
@@ -27,21 +28,20 @@ public class UserInfoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserInfo> userInfo = userInfoRepository.findByName(username);
+        Optional<UserInfo> userInfo = userInfoRepository.findByUsername(username);
         return userInfo.map(UserInfoDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found" + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    public String addUser(UserInfo userInfo) {
+    public void addUser(UserInfo userInfo) {
         // Check if the user already exists
-        UserInfo existingUser = userInfoRepository.findByName(userInfo.getName()).orElse(null);
+        UserInfo existingUser = userInfoRepository.findByEmail(userInfo.getEmail()).orElse(null);
         if (existingUser != null) {
-            return "The user is already registered";
+            return;
         }
 
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
         userInfoRepository.save(userInfo);
-        return "User added successfully";
     }
 
     public List<UserInfo> getAllUser() {
@@ -53,7 +53,16 @@ public class UserInfoService implements UserDetailsService {
     }
 
     public UserInfo getUserByUsername(String username) {
-        return userInfoRepository.findByName(username).orElse(null);
+        return userInfoRepository.findByUsername(username).orElse(null);
+    }
+
+    public String getUsernameById(Integer id) {
+        UserInfo user = userInfoRepository.findById(id).orElse(null);
+        if (user != null) {
+            return user.getUsername();
+        } else {
+            return null;
+        }
     }
 
     public String login(String username, String password) {
@@ -63,11 +72,36 @@ public class UserInfoService implements UserDetailsService {
             if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 return "Invalid username or password";
             }
-            String token = jwtService.generateToken(username);
+
+            UserInfo userInfo = userInfoRepository.findByUsername(username).orElse(null);
+            if (userInfo == null) {
+                return "Invalid username or password";
+            }
+
+            String token = jwtService.generateToken(
+                    userInfo.getId().toString(), // Assuming id is of type Integer
+                    userInfo.getRole(),
+                    userInfo.getFirst_name(),
+                    userInfo.getUsername(),
+                    userInfo.getEmail(),
+                    userInfo.getUser_id().toString()
+            );
             return "Login successful.\nToken: " + token;
         } catch (UsernameNotFoundException e) {
             return "Invalid username or password";
         }
     }
 
+    public List<UserInfo> getUserByRole(String role) {
+        return null;
+    }
+
+    public boolean isEmailRegistered(String email) {
+        // Check if the email exists in the database
+        return userInfoRepository.findByEmail(email).isPresent();
+    }
+
+    public Optional<UserInfo> getUserById(Integer id) { // New method to get user by ID
+        return userInfoRepository.findById(id);
+    }
 }
