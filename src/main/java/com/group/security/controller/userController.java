@@ -54,6 +54,12 @@ public class userController {
         return userInfoService.getAllUser();
     }
 
+    @GetMapping("/getUser/{id}")
+    public ResponseEntity<UserInfo> getUser(@PathVariable int id) {
+        UserInfo userInfo = userInfoService.getUser(id);
+        return ResponseEntity.ok(userInfo);
+    }
+
     @GetMapping("/welcome")
     public String welcome() {
         return "Welcome to Security !!";
