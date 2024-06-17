@@ -6,19 +6,22 @@ import com.group.security.entity.Order;
 import com.group.security.service.EmailService;
 import com.group.security.service.OrderService;
 import com.group.security.utils.QRCodeGenerator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
+@Validated
 public class OrderController {
 
     private final OrderService orderService;
@@ -28,11 +31,6 @@ public class OrderController {
     public ResponseEntity<List<Order>> getOrders() {
         List<Order> orders = orderService.getOrders();
         return ResponseEntity.ok(orders);
-    }
-
-    @PostMapping
-    public Order addOrder(@RequestBody Order order) {
-        return orderService.addOrder(order);
     }
 
     @GetMapping("/{id}")
@@ -46,7 +44,7 @@ public class OrderController {
     }
 
     @GetMapping("/generateQR/{orderId}")
-    public ResponseEntity<String> generateQR(@PathVariable("orderId") Long orderId) throws IOException, WriterException, MessagingException, WriterException, jakarta.mail.MessagingException {
+    public ResponseEntity<String> generateQR(@PathVariable("orderId") Long orderId) throws IOException, WriterException, MessagingException, jakarta.mail.MessagingException {
         Order order = orderService.findById(orderId);
         if (order == null) {
             return ResponseEntity.notFound().build();
@@ -64,14 +62,34 @@ public class OrderController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Order> createOrder(@RequestBody OrderRequest orderRequest) {
-        Order order = orderService.createOrder(
-                orderRequest.getUserId(),
-                orderRequest.getEventId(),
-                orderRequest.getAmount(),
-                orderRequest.getPaymentStatus()
-        );
-        return ResponseEntity.ok(order);
+    public ResponseEntity<String> createOrder(@RequestBody @Valid OrderRequest orderRequest) {
+        try {
+            // Additional validation logic if needed
+            Order order = orderService.createOrder(
+                    orderRequest.getOrderId(),
+                    orderRequest.getUserId(),
+                    orderRequest.getEventId(),
+                    orderRequest.getAmount(),
+                    orderRequest.getPaymentStatus()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Order created successfully: Payment Status: " + order.getPaymentStatus() + ", Timestamp: " + order.getTimestamp());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("User not found") || e.getMessage().equals("Event not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Error: " + e.getMessage());
+            } else {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Error: An internal server error occurred while creating the order.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: An internal server error occurred while creating the order.");
+        }
     }
-
 }

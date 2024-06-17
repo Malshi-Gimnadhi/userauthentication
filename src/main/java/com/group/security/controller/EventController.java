@@ -77,6 +77,15 @@ public class EventController {
     public List<TicketDetails> getCustomTicketDetailsByEventId(@PathVariable Long eventId) {
         return eventService.getCustomTicketDetailsByEventId(eventId);
     }
+
+    // New method to get event by ID
+    @GetMapping("/{eventId}")
+    public ResponseEntity<Eventcards> getEventById(@PathVariable Long eventId) {
+        Eventcards event = eventCardsRepository.findByEventId(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with eventId: " + eventId));
+        return ResponseEntity.ok(event);
+    }
+
 }
 
 //import com.group.security.Exception.EventNotFoundException;

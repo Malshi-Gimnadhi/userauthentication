@@ -100,8 +100,4 @@ public class UserInfoService implements UserDetailsService {
         // Check if the email exists in the database
         return userInfoRepository.findByEmail(email).isPresent();
     }
-
-    public Optional<UserInfo> getUserById(Integer id) { // New method to get user by ID
-        return userInfoRepository.findById(id);
-    }
 }

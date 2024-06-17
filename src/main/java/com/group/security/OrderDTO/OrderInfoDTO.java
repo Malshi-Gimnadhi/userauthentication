@@ -15,7 +15,7 @@ public class OrderInfoDTO {
     private String city;
     private String country;
     private String merchantId;
-    private String merchantSecret;
+    //private String merchantSecret;
     private String amountFormatted;
     private String hash;
 
@@ -32,7 +32,7 @@ public class OrderInfoDTO {
         this.city = city;
         this.country = country;
         this.merchantId = merchantId;
-        this.merchantSecret = merchantSecret;
+        //this.merchantSecret = merchantSecret;
         this.amountFormatted = amountFormatted;
         this.hash = hash;
 
@@ -138,13 +138,13 @@ public class OrderInfoDTO {
         this.merchantId = merchantId;
     }
 
-    public String getMerchantSecret() {
-        return merchantSecret;
-    }
-
-    public void setMerchantSecret(String merchantSecret) {
-        this.merchantSecret = merchantSecret;
-    }
+//    //public String getMerchantSecret() {
+//        return merchantSecret;
+//    }
+//
+//    public void setMerchantSecret(String merchantSecret) {
+//        this.merchantSecret = merchantSecret;
+//    }
 
     public String getAmountFormatted() {
         return amountFormatted;

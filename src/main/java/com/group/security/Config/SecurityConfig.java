@@ -61,7 +61,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/welcome", "/auth/setUser/{id}","/auth/getUsers", "/auth/getUsers/{id}", "/auth/addUser", "/auth/login","/auth/getUsername/{id}",
                                 "/eventcards/customTicketDetails/{eventId}", "/eventcards/category/{category}", "/eventcards/ticketDetails/{eventId}", "/eventcards/getAll", "/eventcards/add",
                                 "/user/{id}" , "/contact/add", "/contact/getAll",
-                                "/order-summary/**","/order-summary","/orders/generateQR/{orderId}"
+                                "/order-summary/**","/order-summary","/orders/generateQR/{orderId}","/order-summary/order"
                                 , "https://sandbox.payhere.lk", "https://www.payhere.lk","/orders/add","auth/getUser/{id}")
                         .permitAll()
                         .anyRequest().authenticated())
@@ -73,7 +73,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-//ravishan
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

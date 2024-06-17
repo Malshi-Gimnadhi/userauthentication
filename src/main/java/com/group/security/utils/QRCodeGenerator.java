@@ -1,15 +1,13 @@
 package com.group.security.utils;
 
-import com.group.security.entity.Order;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.group.security.entity.Order;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -18,12 +16,8 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.property.HorizontalAlignment;
-import com.itextpdf.layout.property.TextAlignment;
-
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -31,7 +25,7 @@ import java.nio.file.Path;
 
 public class QRCodeGenerator {
     public static String generateQRCode(Order order) throws WriterException, IOException {
-        String qrCodePath = "Users\\ravishan\\Desktop\\Ravishan";
+        String qrCodePath = "E:\\ENGINEERING\\FOE-UOR";
         String qrCodeName = qrCodePath + "Order-" + order.getOrderId() + "-QRCODE.png";
 
         // Generate QR code
