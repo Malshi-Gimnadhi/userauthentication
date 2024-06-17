@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
     private Timestamp timestamp;
@@ -32,4 +31,5 @@ public class Order {
 
     private BigDecimal amount;
     private String paymentStatus;
+
 }

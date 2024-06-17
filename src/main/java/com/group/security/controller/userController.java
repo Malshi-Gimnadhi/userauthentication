@@ -68,11 +68,4 @@ public class userController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
-
-    @GetMapping("/getUser/{id}")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<UserInfo> getUserById(@PathVariable Integer id) {
-        Optional<UserInfo> userInfo = userInfoService.getUserById(id);
-        return userInfo.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
-    }
 }

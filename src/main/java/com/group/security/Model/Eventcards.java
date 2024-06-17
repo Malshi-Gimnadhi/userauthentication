@@ -4,10 +4,8 @@ import java.util.List;
 
 @Entity
 public class Eventcards {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
+    @Id
     @Column(unique = true, nullable = false)
     private Long eventId;
 
@@ -15,7 +13,9 @@ public class Eventcards {
     private String eventDate;
     private String eventTime;
     private String eventLocation;
+    @Column(length = 5000)
     private String eventDescription;
+
     private String ticketDetails;
     private String eventCategory;
     private String flyerLink;
@@ -32,13 +32,6 @@ public class Eventcards {
 
     public Eventcards() {}
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Long getEventId() {
         return eventId;
